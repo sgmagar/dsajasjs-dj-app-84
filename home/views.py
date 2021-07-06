@@ -1,3 +1,5 @@
+from .models import NewHello
+from django.views.generic import CreateView, UpdateView, DetailView, ListView
 from django.shortcuts import render
 
 
@@ -18,3 +20,10 @@ def home(request):
     ]
     context = {"packages": packages}
     return render(request, "home/index.html", context)
+
+
+class NewHelloCreateView(CreateView):
+    template_name = "crud/create.html"
+    model = NewHello
+    fields = "__all__"
+    success_url = "/"
