@@ -80,3 +80,9 @@ class NewHelloSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewHello
         fields = "__all__"
+
+
+class NewHelloSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewHello
+        fields = "__all__"

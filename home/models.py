@@ -7,3 +7,10 @@ class NewHello(models.Model):
     name = models.CharField(
         max_length=256,
     )
+
+
+class NewHello(models.Model):
+    "Generated Model"
+    name = models.CharField(
+        max_length=256,
+    )

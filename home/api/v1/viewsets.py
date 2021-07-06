@@ -41,3 +41,12 @@ class NewHelloViewSet(viewsets.ModelViewSet):
         authentication.TokenAuthentication,
     )
     queryset = NewHello.objects.all()
+
+
+class NewHelloViewSet(viewsets.ModelViewSet):
+    serializer_class = NewHelloSerializer
+    authentication_classes = (
+        authentication.SessionAuthentication,
+        authentication.TokenAuthentication,
+    )
+    queryset = NewHello.objects.all()
