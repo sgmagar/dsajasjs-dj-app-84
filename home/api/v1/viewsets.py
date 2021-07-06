@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from home.models import NewHello
-from .serializers import NewHelloSerializer
+from home.models import Hello
+from .serializers import HelloSerializer
 from rest_framework import authentication
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.viewsets import ModelViewSet, ViewSet
@@ -34,19 +34,19 @@ class LoginViewSet(ViewSet):
         return Response({"token": token.key, "user": user_serializer.data})
 
 
-class NewHelloViewSet(viewsets.ModelViewSet):
-    serializer_class = NewHelloSerializer
+class HelloViewSet(viewsets.ModelViewSet):
+    serializer_class = HelloSerializer
     authentication_classes = (
         authentication.SessionAuthentication,
         authentication.TokenAuthentication,
     )
-    queryset = NewHello.objects.all()
+    queryset = Hello.objects.all()
 
 
-class NewHelloViewSet(viewsets.ModelViewSet):
-    serializer_class = NewHelloSerializer
+class HelloViewSet(viewsets.ModelViewSet):
+    serializer_class = HelloSerializer
     authentication_classes = (
         authentication.SessionAuthentication,
         authentication.TokenAuthentication,
     )
-    queryset = NewHello.objects.all()
+    queryset = Hello.objects.all()

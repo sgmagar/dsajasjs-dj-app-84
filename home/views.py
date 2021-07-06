@@ -1,4 +1,4 @@
-from .models import NewHello
+from .models import Hello
 from django.views.generic import CreateView, UpdateView, DetailView, ListView
 from django.shortcuts import render
 
@@ -22,8 +22,8 @@ def home(request):
     return render(request, "home/index.html", context)
 
 
-class NewHelloCreateView(CreateView):
+class HelloCreateView(CreateView):
     template_name = "crud/create.html"
-    model = NewHello
+    model = Hello
     fields = "__all__"
     success_url = "/"
