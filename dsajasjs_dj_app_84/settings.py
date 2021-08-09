@@ -14,6 +14,7 @@ import os
 import environ
 import logging
 from modules.manifest import get_modules
+from google.cloud import secretmanager
 
 env = environ.Env()
 
@@ -23,6 +24,18 @@ DEBUG = env.bool("DEBUG", default=False)
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+print("Google Cloud Project env var", os.environ.get("GOOGLE_CLOUD_PROJECT", None))
+print("Google Project Id env var", os.environ.get("PROJECT_ID", None))
+if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+    # Pull secrets from Secret Manager
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+
+    client = secretmanager.SecretManagerServiceClient()
+    settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
+    name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
+    payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
+
+    env.read_env(io.StringIO(payload))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
