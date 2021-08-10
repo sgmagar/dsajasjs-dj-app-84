@@ -18,7 +18,6 @@ RUN apt-get update \
 WORKDIR /opt/webapp
 COPY . .
 RUN pip3 install --no-cache-dir -q 'pipenv==2018.11.26' && pipenv install --deploy --system
-RUN python3 manage.py collectstatic --no-input
 
 # Run the image as a non-root user
 RUN adduser --disabled-password --gecos "" django

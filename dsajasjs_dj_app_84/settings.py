@@ -11,31 +11,37 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import io
 import environ
 import logging
 from modules.manifest import get_modules
-from google.cloud import secretmanager
+
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env_file = os.path.join(BASE_DIR, ".env")
 
 env = environ.Env()
+env.read_env(env_file)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-print("Google Cloud Project env var", os.environ.get("GOOGLE_CLOUD_PROJECT", None))
-print("Google Project Id env var", os.environ.get("PROJECT_ID", None))
-if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+if not os.path.exists(env_file):
+    import google.auth
+    from google.cloud import secretmanager
     # Pull secrets from Secret Manager
-    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+    _, project = google.auth.default()
+    print("Google Project form default auth", project)
 
     client = secretmanager.SecretManagerServiceClient()
     settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
-    name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
+    name = client.secret_version_path(project, settings_name, "latest")
     payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
-
+    # with open(env_file, "w") as f:
+    #     f.write(payload)
     env.read_env(io.StringIO(payload))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -245,3 +251,10 @@ if DEBUG or not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
             "You should setup `SENDGRID_USERNAME` and `SENDGRID_PASSWORD` env vars to send emails."
         )
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+GS_BUCKET_NAME = env("GS_BUCKET_NAME", "")
+if GS_BUCKET_NAME:
+    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    GS_DEFAULT_ACL = "publicRead"
+
