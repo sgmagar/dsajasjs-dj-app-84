@@ -252,7 +252,7 @@ if DEBUG or not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
         )
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-GS_BUCKET_NAME = env("GS_BUCKET_NAME", "")
+GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", "")
 if GS_BUCKET_NAME:
     DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
     STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
